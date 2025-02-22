@@ -41,6 +41,58 @@ exports.getUser = async (req, res) => {
     }
 };
 
+
+exports.updateUserScore = async (req, res) => {
+    try {
+        const { score } = req.body;
+        const userId = parseInt(req.params.id); // Convert to number
+        console.log("Score type:", typeof score);
+        console.log("User ID type:", typeof userId);
+
+        if (isNaN(userId)) {
+            return res.status(400).json({
+                success: false,
+                error: "Invalid user ID format"
+            });
+        }
+
+        // Ensure score is a number
+        const scoreNumber = parseFloat(score);
+        if (isNaN(scoreNumber)) {
+            return res.status(400).json({
+                success: false,
+                error: "Invalid score format"
+            });
+        }
+
+        const user = await User.findOneAndUpdate(
+            { id: userId },  // Find user by numeric ID
+            { $set: { score: scoreNumber } }, // Update only the score field
+            { new: true, runValidators: true } // Return updated user, apply schema validation
+        );
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                error: "User not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: user
+        });
+
+    } catch (error) {
+        console.error("Error updating user:", error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+};
+
+
 // Create user
 exports.createUser = async (req, res) => {
     try {
