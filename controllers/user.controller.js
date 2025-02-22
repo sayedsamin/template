@@ -2,26 +2,27 @@ const User = require('../models/user.model');
 const bcrypt = require('bcryptjs');
 
 // Get all users
-exports.getAllUsers = async (req, res) => {
-    try {
-        const users = await User.find().select('-password');
-        res.status(200).json({
-            success: true,
-            count: users.length,
-            data: users
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: 'Server Error'
-        });
-    }
-};
+// exports.getAllUsers = async (req, res) => {
+//     try {
+//         const users = await User.find().select('-password');
+//         res.status(200).json({
+//             success: true,
+//             count: users.length,
+//             data: users
+//         });
+//     } catch (error) {
+//         res.status(500).json({
+//             success: false,
+//             error: 'Server Error'
+//         });
+//     }
+// };
 
 // Get single user
 exports.getUser = async (req, res) => {
     try {
-        const user = await User.findById(req.params.id).select('-password');
+        const user = await User.findOne({ id: req.params.id });
+        // .select('-password');
         if (!user) {
             return res.status(404).json({
                 success: false,
@@ -43,10 +44,10 @@ exports.getUser = async (req, res) => {
 // Create user
 exports.createUser = async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, userName, password } = req.body;
 
         // Check if user already exists
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ userName });
         if (existingUser) {
             return res.status(400).json({
                 success: false,

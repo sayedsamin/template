@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {
-    getAllUsers,
+    // getAllUsers,
     getUser,
     createUser,
     updateUser,
@@ -10,7 +10,7 @@ const {
 
 // User routes
 router.route('/')
-    .get(getAllUsers)
+    // .get(getAllUsers)
     .post(createUser);
 
 router.route('/:id')
